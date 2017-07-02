@@ -6,7 +6,8 @@ After loading, merging the data sets and extracting the mean and std columns,
 the script uses various dplyr commands to transform the data set into a tidy version.
 The first change is the replacement of the numeric values for descriptive labes in the "activity" column as shown below:
 
-```har <- mutate(har, activity = recode(activity, 
+```R
+har <- mutate(har, activity = recode(activity, 
                        "1" = "walking",
                        "2" = "walking upstairs",
                        "3" = "walking downstairs",
@@ -19,11 +20,12 @@ deviation for various variables and produces a column for each possible combinat
 is to reduce the amount of columns ending with the columns "subject", "variable", "mean" and "std" which can be grouped to form a summary table. The summary table is saved here as tidyData.txt.
 The first command just adds an ID column required afterward by the spread function.
 
-`tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table`
+```R
+tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table```
 
 The second command gather all the variables into a "variable" and "value" column.
 
-`      gather(variable, value, 3:68) %>% #gather all variables`
+```R      gather(variable, value, 3:68) %>% #gather all variables```
 
 The third command separates the spatial dimension. Actually this step is not desired as not all variables have spatial dimentions and some will end with "NA" values. The reason fot the separation is to make easier the separation of the mean and std columns in the next step. Once the "mean" and "std" columns are extracted, the spatial dimension is returned to the variable.
 
