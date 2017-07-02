@@ -14,7 +14,7 @@ har <- mutate(har, activity = recode(activity,
                        "4" = "sitting",
                        "5" = "standing",
                        "6" = "laying"))
-                       ```
+```
                  
 The next step is a chain of commands to rearrange the data. The original data set measures the mean and the standard 
 deviation for various variables and produces a column for each possible combination. The approach taken in this assignment
@@ -37,7 +37,7 @@ The third command separates the spatial dimension. Actually this step is not des
           separate(variable,
                 c("variable", "dimension"),
                 sep = "\\.(?=[XYZ])") %>% #creates a temporary column for spatial dimension
-                ```
+```
                 
 The fourth command separate the std and mean measurement into a temporary column called "fun".
 
@@ -46,7 +46,7 @@ The fourth command separate the std and mean measurement into a temporary column
                 c("variable",
                   "fun"),
                 sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std)
-                ```
+```
 
 The fifth command recode the column "fun" to remove points after the function name and recodes the variables in the "variable" column to make them descriptive. The descriptions come from the documentation of the original data.
  
@@ -72,19 +72,19 @@ The fifth command recode the column "fun" to remove points after the function na
                                 "fBodyBodyAccJerkMag" = "fourier transformed squared body linear jerk magnitude",
                                 "fBodyBodyGyroJerkMag" = "fourier transformed squared body angular jerk magnitude",
                                 "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% 
-                                ```
+```
 The sixth command spreads the "fun" column into the columns "mean" and "std" 
  
 ```R
           spread(fun, value) %>% #separates fun column into mean and std 
-          ```
+```
 
 The seventh and eight commands merge the spatial dimension back to the variable and recode the variables with no spatial dimension.
 
 ```R
        unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
        mutate(variable = gsub("on NA", "", variable)) #renames variables without spatial dimension
-    ```
+```
 
 The resulting dataset is easy to group and summarise with the group_by and summarise function.
 
