@@ -1,6 +1,6 @@
 #Written by Carlos Padron (padron.ca@gmail.com, carlos.florez.16@ucl.ac.uk)
 #Description:
-#This script prepares and analyses a dataset as part of the 
+#This script prepares a tidy data set as part of the 
 #Getting and Cleaning Data Course Project.
 #The data comes from the following publication:
 #Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and 
@@ -68,10 +68,10 @@ tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table
                 c("variable",
                   "fun"),
                 sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std) 
-       mutate(fun = recode(fun,
+       mutate(fun = recode(fun, #recodes variables for better reading
                            "mean.." = "mean",
                           "std.." = "std"),
-              variable = recode(variable,
+              variable = recode(variable, 
                                 "tBodyAcc" = "body acceleration",
                                 "tGravityAcc" = "gravity acceleration",
                                 "tBodyGyro" = "body angular acceleration",
@@ -88,7 +88,7 @@ tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table
                                 "fBodyAccMag" = "fourier transformed body acceleration magnitude",
                                 "fBodyBodyAccJerkMag" = "fourier transformed squared body linear jerk magnitude",
                                 "fBodyBodyGyroJerkMag" = "fourier transformed squared body angular jerk magnitude",
-                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% #recodes variables for better reading
+                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% 
        spread(fun, value) %>% #separates fun column into mean and std 
        unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
        mutate(variable = gsub("on NA", "", variable)) #renames variables without spatial dimension
