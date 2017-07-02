@@ -18,22 +18,32 @@ The next step is a chain of commands to rearrange the data. The original data se
 deviation for various variables and produces a column for each possible combination. The approach taken in this assignment
 is to reduce the amount of columns ending with the columns "subject", "variable", "mean" and "std" which can be grouped to form a summary table. The summary table is saved here as tidyData.txt.
 The first command just adds an ID column required afterward by the spread function.
+
 `tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table`
+
 The second command gather all the variables into a "variable" and "value" column.
+
 `      gather(variable, value, 3:68) %>% #gather all variables`
+
 The third command separates the spatial dimension. Actually this step is not desired as not all variables have spatial dimentions and some will end with "NA" values. The reason fot the separation is to make easier the separation of the mean and std columns in the next step. Once the "mean" and "std" columns are extracted, the spatial dimension is returned to the variable.
+
 ```       separate(variable,
                 c("variable", "dimension"),
                 sep = "\\.(?=[XYZ])") %>% #creates a temporary column for spatial dimension```
-The fourth 
-       separate(variable,
+                
+The fourth command separate the std and mean measurement into a temporary column called "fun".
+
+```       separate(variable,
                 c("variable",
                   "fun"),
-                sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std) 
-       mutate(fun = recode(fun,
+                sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std) ```
+
+The fifth command recode the column "fun" to remove points after the function name and recodes the variables in the "variable" column to make them descriptive. The descriptions come from the documentation of the original data.
+ 
+```       mutate(fun = recode(fun,
                            "mean.." = "mean",
                           "std.." = "std"),
-              variable = recode(variable,
+              variable = recode(variable, #recodes variables for better reading
                                 "tBodyAcc" = "body acceleration",
                                 "tGravityAcc" = "gravity acceleration",
                                 "tBodyGyro" = "body angular acceleration",
@@ -50,12 +60,17 @@ The fourth
                                 "fBodyAccMag" = "fourier transformed body acceleration magnitude",
                                 "fBodyBodyAccJerkMag" = "fourier transformed squared body linear jerk magnitude",
                                 "fBodyBodyGyroJerkMag" = "fourier transformed squared body angular jerk magnitude",
-                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% #recodes variables for better reading
-       spread(fun, value) %>% #separates fun column into mean and std 
-       unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
+                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% ```
+The sixth command spreads the "fun" column into the columns "mean" and "std" 
+ 
+`       spread(fun, value) %>% #separates fun column into mean and std `
+
+The seventh and eight commands merge the spatial dimension back to the variable and recode the variables with no spatial dimension.
+```       unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
        mutate(variable = gsub("on NA", "", variable)) #renames variables without spatial dimension```
 
-#group the table by subject, activity and variable
+The resulting dataset is easy to group and summarise with the group_by and summarise function.
+```#group the table by subject, activity and variable
 tidyGroup <- group_by(tidyHar, subject, activity, variable) 
 #produce summary table with average values
-tidySummary <- summarise(tidyGroup, avg_mean = mean(mean), avg_std = mean(std))
+tidySummary <- summarise(tidyGroup, avg_mean = mean(mean), avg_std = mean(std))```
