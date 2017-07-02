@@ -38,7 +38,8 @@ har_test <- cbind(subject_test, x_test, y_test)
 har_train <- cbind(subject_train, x_train, y_train)
 har <- rbind(har_test, har_train)
 #Extracts measurements on the mean and standard deviation
-#We are interested in the mean and std values followed by (). 
+#We are interested in the mean and std values followed by (). The symbols () represent function so it extracts the mean()
+#and std() functions.
 har <- tbl_df(har)
 har <- select(har, "subject",
             "activity",
