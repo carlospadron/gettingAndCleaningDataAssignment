@@ -33,20 +33,25 @@ gather(variable, value, 3:68) %>% #gather all variables
 
 The third command separates the spatial dimension. Actually this step is not desired as not all variables have spatial dimentions and some will end with "NA" values. The reason fot the separation is to make easier the separation of the mean and std columns in the next step. Once the "mean" and "std" columns are extracted, the spatial dimension is returned to the variable.
 
-```       separate(variable,
+```R
+          separate(variable,
                 c("variable", "dimension"),
-                sep = "\\.(?=[XYZ])") %>% #creates a temporary column for spatial dimension```
+                sep = "\\.(?=[XYZ])") %>% #creates a temporary column for spatial dimension
+                ```
                 
 The fourth command separate the std and mean measurement into a temporary column called "fun".
 
-```       separate(variable,
+```R
+          separate(variable,
                 c("variable",
                   "fun"),
-                sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std) ```
+                sep = "\\.(?=[sm])")  %>% #creates a column for function (mean or std)
+                ```
 
 The fifth command recode the column "fun" to remove points after the function name and recodes the variables in the "variable" column to make them descriptive. The descriptions come from the documentation of the original data.
  
-```       mutate(fun = recode(fun,
+```R
+          mutate(fun = recode(fun,
                            "mean.." = "mean",
                           "std.." = "std"),
               variable = recode(variable, #recodes variables for better reading
@@ -66,17 +71,26 @@ The fifth command recode the column "fun" to remove points after the function na
                                 "fBodyAccMag" = "fourier transformed body acceleration magnitude",
                                 "fBodyBodyAccJerkMag" = "fourier transformed squared body linear jerk magnitude",
                                 "fBodyBodyGyroJerkMag" = "fourier transformed squared body angular jerk magnitude",
-                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% ```
+                                "fBodyBodyGyroMag" = "fourier transformed squared body angular velocity magnitude")) %>% 
+                                ```
 The sixth command spreads the "fun" column into the columns "mean" and "std" 
  
-`       spread(fun, value) %>% #separates fun column into mean and std `
+```R
+          spread(fun, value) %>% #separates fun column into mean and std 
+          ```
 
 The seventh and eight commands merge the spatial dimension back to the variable and recode the variables with no spatial dimension.
-```       unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
-       mutate(variable = gsub("on NA", "", variable)) #renames variables without spatial dimension```
+
+```R
+       unite(variable, variable, dimension, sep = " on ") %>%  #brings back spatial dimension to variable
+       mutate(variable = gsub("on NA", "", variable)) #renames variables without spatial dimension
+    ```
 
 The resulting dataset is easy to group and summarise with the group_by and summarise function.
-```#group the table by subject, activity and variable
+
+```R
+#group the table by subject, activity and variable
 tidyGroup <- group_by(tidyHar, subject, activity, variable) 
 #produce summary table with average values
-tidySummary <- summarise(tidyGroup, avg_mean = mean(mean), avg_std = mean(std))```
+tidySummary <- summarise(tidyGroup, avg_mean = mean(mean), avg_std = mean(std))
+```
