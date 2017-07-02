@@ -13,7 +13,8 @@ har <- mutate(har, activity = recode(activity,
                        "3" = "walking downstairs",
                        "4" = "sitting",
                        "5" = "standing",
-                       "6" = "laying"))```
+                       "6" = "laying"))
+                       ```
                  
 The next step is a chain of commands to rearrange the data. The original data set measures the mean and the standard 
 deviation for various variables and produces a column for each possible combination. The approach taken in this assignment
@@ -21,11 +22,14 @@ is to reduce the amount of columns ending with the columns "subject", "variable"
 The first command just adds an ID column required afterward by the spread function.
 
 ```R
-tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table```
+tidyHar <- mutate(har, id = 1:n()) %>% #add an id column to the table
+```
 
 The second command gather all the variables into a "variable" and "value" column.
 
-```R      gather(variable, value, 3:68) %>% #gather all variables```
+```R     
+gather(variable, value, 3:68) %>% #gather all variables
+```
 
 The third command separates the spatial dimension. Actually this step is not desired as not all variables have spatial dimentions and some will end with "NA" values. The reason fot the separation is to make easier the separation of the mean and std columns in the next step. Once the "mean" and "std" columns are extracted, the spatial dimension is returned to the variable.
 
